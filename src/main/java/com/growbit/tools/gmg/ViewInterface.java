@@ -45,18 +45,19 @@ public class ViewInterface implements HasTypeName, IsJavaFile {
 
     @Override
     public JavaFile asJavaFile() {
-        TypeSpec presenterItf = TypeSpec.interfaceBuilder("Presenter")
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+        final TypeSpec presenterItf = TypeSpec.interfaceBuilder("Presenter")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addSuperinterface(Constants.PRESENTER_TYPE_NAME)
                 .build();
 
-        ClassName ownPresenterTypeName = ClassName.get(pack.getCanonicalName(), typeName, "Presenter");
+        final ClassName ownPresenterTypeName = ClassName.get(pack.getCanonicalName(), typeName, "Presenter");
+        final ClassName viewImplTypeName = ClassName.get(pack.getCanonicalName(), typeName + "Impl");
 
-        TypeSpec viewItf = TypeSpec.interfaceBuilder(typeName)
+        final TypeSpec viewItf = TypeSpec.interfaceBuilder(typeName)
+                .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ParameterizedTypeName.get(Constants.VIEW_TYPE_NAME, ownPresenterTypeName))
                 .addAnnotation(AnnotationSpec.builder(Constants.IMPLEMENTED_BY_TYPE_NAME)
-                        // FIXME: Substitute by ($T, ClassName.get(pack.getCanonicalName(), typeName + "Impl"))
-                        .addMember("value", "$L", typeName + "Impl.class")
+                        .addMember("value", "$T.class", viewImplTypeName)
                         .build())
                 .addType(presenterItf)
                 .build();
