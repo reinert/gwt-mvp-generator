@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>gwt-mvp-generator</name>
-  <url>http://maven.apache.org</url>
+  <url>http://growbit.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,6 +22,11 @@
       <artifactId>javapoet</artifactId>
       <version>1.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.martiansoftware</groupId>
+      <artifactId>jsap</artifactId>
+      <version>2.1</version>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -30,6 +35,13 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>onejar-maven-plugin.googlecode.com</id>
+      <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+    </pluginRepository>
+  </pluginRepositories>
 
   <build>
     <plugins>
@@ -57,6 +69,22 @@
             <phase>verify</phase>
             <goals>
               <goal>checkstyle</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.dstovall</groupId>
+        <artifactId>onejar-maven-plugin</artifactId>
+        <version>1.4.4</version>
+        <configuration>
+          <mainClass>com.growbit.tools.gmg.Generator</mainClass>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>one-jar</goal>
             </goals>
           </execution>
         </executions>

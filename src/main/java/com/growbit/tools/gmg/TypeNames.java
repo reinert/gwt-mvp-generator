@@ -4,6 +4,9 @@ import com.squareup.javapoet.ClassName;
 
 public final class TypeNames {
 
+    private TypeNames() {
+    }
+
     // growbit.mvp
     public static final ClassName PRESENTER = ClassName.get("br.com.salesdomain.mvp", "Presenter");
     public static final ClassName ABSTRACT_PRESENTER = ClassName.get("br.com.salesdomain.mvp", "AbstractPresenter");
@@ -23,7 +26,8 @@ public final class TypeNames {
     public static final ClassName UI_HANDLER = ClassName.get("com.google.gwt.uibinder.client", "UiHandler");
     // google.gwt widgets
     public static final ClassName WIDGET = ClassName.get("com.google.gwt.user.client.ui", "Widget");
-    public static final ClassName ACCEPTS_ONE_WIDGET = ClassName.get("com.google.gwt.user.client.ui", "AcceptsOneWidget");
+    public static final ClassName ACCEPTS_ONE_WIDGET = ClassName.get("com.google.gwt.user.client.ui",
+            "AcceptsOneWidget");
     public static final ClassName HTMLPANEL = ClassName.get("com.google.gwt.user.client.ui", "HTMLPanel");
     // google.gwt place
     public static final ClassName PLACE = ClassName.get("com.google.gwt.place.shared", "Place");
