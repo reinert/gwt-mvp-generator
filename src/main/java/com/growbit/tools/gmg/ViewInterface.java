@@ -4,18 +4,22 @@ import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
 
-public class ViewInterface implements HasTypeName, IsJavaFile {
+public class ViewInterface implements HasName, HasTypeName, IsJavaFile {
 
     public static final String SUFFIX = "View";
 
     private final Package pack;
     private final Entity entity;
-    private final String typeName;
+    private final String name;
+    private final TypeName typeName;
+    private final ClassName innerPresenterTypeName;
 
     public ViewInterface(Package pack, Entity entity) {
         this.pack = pack;
         this.entity = entity;
-        this.typeName = entity.getName() + SUFFIX;
+        this.name = entity.getName() + SUFFIX;
+        this.typeName = ClassName.get(pack.getCanonicalName(), name);
+        this.innerPresenterTypeName = ClassName.get(pack.getCanonicalName(), name, "Presenter");
     }
 
     public Package getPackage() {
@@ -27,36 +31,32 @@ public class ViewInterface implements HasTypeName, IsJavaFile {
     }
 
     @Override
-    public String getTypeName() {
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public TypeName getTypeName() {
         return typeName;
     }
 
-//    package br.com.salesdomain.app.lead;
-//
-//    import com.google.inject.ImplementedBy;
-//    import br.com.salesdomain.mvp.View;
-//
-//    @ImplementedBy(LeadViewImpl.class)
-//    public interface LeadView extends View<LeadView.Presenter> {
-//
-//        interface Presenter extends br.com.salesdomain.mvp.Presenter {
-//        }
-//    }
+    public TypeName getInnerPresenterTypeName() {
+        return innerPresenterTypeName;
+    }
 
     @Override
     public JavaFile asJavaFile() {
         final TypeSpec presenterItf = TypeSpec.interfaceBuilder("Presenter")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addSuperinterface(Constants.PRESENTER_TYPE_NAME)
+                .addSuperinterface(TypeNames.PRESENTER)
                 .build();
 
-        final ClassName ownPresenterTypeName = ClassName.get(pack.getCanonicalName(), typeName, "Presenter");
-        final ClassName viewImplTypeName = ClassName.get(pack.getCanonicalName(), typeName + "Impl");
+        final ClassName viewImplTypeName = ClassName.get(pack.getCanonicalName(), name + "Impl");
 
-        final TypeSpec viewItf = TypeSpec.interfaceBuilder(typeName)
+        final TypeSpec viewItf = TypeSpec.interfaceBuilder(name)
                 .addModifiers(Modifier.PUBLIC)
-                .addSuperinterface(ParameterizedTypeName.get(Constants.VIEW_TYPE_NAME, ownPresenterTypeName))
-                .addAnnotation(AnnotationSpec.builder(Constants.IMPLEMENTED_BY_TYPE_NAME)
+                .addSuperinterface(ParameterizedTypeName.get(TypeNames.VIEW, innerPresenterTypeName))
+                .addAnnotation(AnnotationSpec.builder(TypeNames.IMPLEMENTED_BY)
                         .addMember("value", "$T.class", viewImplTypeName)
                         .build())
                 .addType(presenterItf)

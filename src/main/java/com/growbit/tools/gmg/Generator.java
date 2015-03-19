@@ -23,6 +23,9 @@ public final class Generator {
         Entity e = new Entity("Lead");
 
         ViewInterface vi = new ViewInterface(p, e);
-        vi.asJavaFile().writeTo(System.out);
+//        vi.asJavaFile().writeTo(System.out);
+
+        ViewImplClass vic = new ViewImplClass(vi);
+        vic.asJavaFile().writeTo(System.out);
     }
 }
