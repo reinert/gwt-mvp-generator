@@ -1,10 +1,15 @@
 package com.growbit.tools.gmg;
 
-import com.squareup.javapoet.*;
-
 import javax.lang.model.element.Modifier;
 
-public class ViewInterface implements HasName, HasTypeName, IsJavaFile {
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
+
+public class ViewInterface implements HasName, HasTypeName, HasTypeSpec, IsJavaFile {
 
     public static final String SUFFIX = "View";
 
@@ -13,6 +18,7 @@ public class ViewInterface implements HasName, HasTypeName, IsJavaFile {
     private final String name;
     private final TypeName typeName;
     private final ClassName innerPresenterTypeName;
+    private final TypeSpec typeSpec;
 
     public ViewInterface(Package pack, Entity entity) {
         this.pack = pack;
@@ -20,6 +26,7 @@ public class ViewInterface implements HasName, HasTypeName, IsJavaFile {
         this.name = entity.getName() + SUFFIX;
         this.typeName = ClassName.get(pack.getCanonicalName(), name);
         this.innerPresenterTypeName = ClassName.get(pack.getCanonicalName(), name, "Presenter");
+        this.typeSpec = createTypeSpec();
     }
 
     public Package getPackage() {
@@ -28,6 +35,10 @@ public class ViewInterface implements HasName, HasTypeName, IsJavaFile {
 
     public Entity getEntity() {
         return entity;
+    }
+
+    public TypeName getInnerPresenterTypeName() {
+        return innerPresenterTypeName;
     }
 
     @Override
@@ -40,12 +51,17 @@ public class ViewInterface implements HasName, HasTypeName, IsJavaFile {
         return typeName;
     }
 
-    public TypeName getInnerPresenterTypeName() {
-        return innerPresenterTypeName;
+    @Override
+    public TypeSpec getTypeSpec() {
+        return typeSpec;
     }
 
     @Override
     public JavaFile asJavaFile() {
+        return JavaFile.builder(pack.getCanonicalName(), typeSpec).build();
+    }
+
+    private TypeSpec createTypeSpec() {
         final TypeSpec presenterItf = TypeSpec.interfaceBuilder("Presenter")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
                 .addSuperinterface(TypeNames.PRESENTER)
@@ -53,7 +69,7 @@ public class ViewInterface implements HasName, HasTypeName, IsJavaFile {
 
         final ClassName viewImplTypeName = ClassName.get(pack.getCanonicalName(), name + "Impl");
 
-        final TypeSpec viewItf = TypeSpec.interfaceBuilder(name)
+        return TypeSpec.interfaceBuilder(name)
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ParameterizedTypeName.get(TypeNames.VIEW, innerPresenterTypeName))
                 .addAnnotation(AnnotationSpec.builder(TypeNames.IMPLEMENTED_BY)
@@ -61,7 +77,5 @@ public class ViewInterface implements HasName, HasTypeName, IsJavaFile {
                         .build())
                 .addType(presenterItf)
                 .build();
-
-        return JavaFile.builder(pack.getCanonicalName(), viewItf).build();
     }
 }

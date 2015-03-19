@@ -15,6 +15,7 @@ public final class TypeNames {
     public static final ClassName SINGLETON = ClassName.get("com.google.inject", "Singleton");
 
     // google.gwt
+    public static final ClassName GWT = ClassName.get("com.google.gwt.core.client", "GWT");
     public static final ClassName UI_BINDER = ClassName.get("com.google.gwt.uibinder.client", "UiBinder");
     public static final ClassName UI_FIELD = ClassName.get("com.google.gwt.uibinder.client", "UiField");
     public static final ClassName UI_HANDLER = ClassName.get("com.google.gwt.uibinder.client", "UiHandler");
