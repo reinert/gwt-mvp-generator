@@ -21,6 +21,10 @@ public class ViewImplUiXml implements IsString {
         return viewImplClass.getEntity();
     }
 
+    public ViewImplClass getViewImplClass() {
+        return viewImplClass;
+    }
+
     @Override
     public String asString() {
         return str;

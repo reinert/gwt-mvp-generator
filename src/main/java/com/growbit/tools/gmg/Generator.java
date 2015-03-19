@@ -18,6 +18,9 @@ public final class Generator {
 //        vic.asJavaFile().writeTo(System.out);
 
         ViewImplUiXml viux = new ViewImplUiXml(vic);
-        System.out.println(viux.asString());
+//        System.out.println(viux.asString());
+
+        PresenterClass pc = new PresenterClass(vi);
+        pc.asJavaFile().writeTo(System.out);
     }
 }
