@@ -32,7 +32,10 @@ public final class Generator {
         );
 
         final JSAPResult config = jsap.parse(args);
-        if (jsap.messagePrinted()) System.exit(1);
+        if (jsap.messagePrinted()) {
+            System.out.println(jsap.getHelp());
+            System.exit(1);
+        }
 
         final String name = config.getString("name");
         final String pack = config.getString("package");
